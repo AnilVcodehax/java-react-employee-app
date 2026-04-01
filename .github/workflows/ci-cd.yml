@@ -9,13 +9,9 @@ jobs:
 
   build-backend:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Debug folder structure
-        run: ls -R
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -23,23 +19,19 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Build & Test Spring Boot
+      - name: Build Spring Boot
         run: |
           cd Java-SpringBoot-Node-React
-          mvn clean install verify -DskipTests
+          mvn clean install -DskipTests
 
 
   build-frontend:
     runs-on: ubuntu-latest
-
-    needs: build-backend
+    needs: build-backend   # waits for backend
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Debug folder structure
-        run: ls -R
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -50,12 +42,35 @@ jobs:
         run: |
           cd react_front-end-employee-ui
           npm install
-      - name: Run React Tests
+
+      - name: Run Tests
         run: |
           cd react_front-end-employee-ui
           npm test -- --watchAll=false || true
-          
+
       - name: Build React App
         run: |
           cd react_front-end-employee-ui
           npm run build
+
+
+  # ✅ ADD HERE (same level)
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 🔹 Backend Docker Image
+      - name: Build Backend Docker Image
+        run: |
+          cd Java-SpringBoot-Node-React
+          docker build -t employee-backend .
+
+      # 🔹 Frontend Docker Image
+      - name: Build Frontend Docker Image
+        run: |
+          cd react_front-end-employee-ui
+          docker build -t employee-frontend .
