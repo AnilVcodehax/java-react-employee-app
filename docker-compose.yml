@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+
+  backend:
+    build: ./Java-SpringBoot-Node-React
+    container_name: employee-backend
+    ports:
+      - "8080:8080"
+    networks:
+      - employee-network
+
+  frontend:
+    build: ./react_front-end-employee-ui
+    container_name: employee-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - employee-network
+
+networks:
+  employee-network:
