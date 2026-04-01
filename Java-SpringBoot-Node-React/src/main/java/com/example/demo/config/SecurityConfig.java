@@ -33,6 +33,7 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    /* local host code
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -62,7 +63,41 @@ public class SecurityConfig {
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    } */
+
+    // on render.com
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+            .cors()
+            .and()
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html").permitAll()
+                .requestMatchers("/api/employees/profile/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/employees/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(sess ->
+                sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((req, res, e) -> {
+                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    res.getWriter().write("Unauthorized");
+                })
+                .accessDeniedHandler((req, res, e) -> {
+                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    res.getWriter().write("Access Denied");
+                })
+            );
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
+    
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -76,17 +111,17 @@ public class SecurityConfig {
     }
 
     @Bean
-public OpenAPI openAPI() {
-    return new OpenAPI()
-        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-        .components(new Components()
-            .addSecuritySchemes("bearerAuth",
-                new SecurityScheme()
-                    .name("Authorization")
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")
-            )
-        );
-}
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+            .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+            .components(new Components()
+                .addSecuritySchemes("bearerAuth",
+                    new SecurityScheme()
+                        .name("Authorization")
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                )
+            );
+    }
 }
