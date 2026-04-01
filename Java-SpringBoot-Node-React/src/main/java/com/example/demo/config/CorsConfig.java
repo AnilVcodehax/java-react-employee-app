@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.cors.*;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.List
+import java.util.List;
 
 @Configuration
 public class CorsConfig {
