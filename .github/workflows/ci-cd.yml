@@ -22,7 +22,7 @@ jobs:
       - name: Build Spring Boot
         run: |
           cd Java-SpringBoot-Node-React
-          mvn clean install -DskipTests
+          mvn clean package install -DskipTests
 
 
   build-frontend:
