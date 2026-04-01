@@ -37,7 +37,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);
 
         config.setAllowedOrigins(List.of(
-            "https://anil-employee-front-end-onrender.com"
+            "https://anil-employee-front-end.onrender.com"
         ));
         config.setAllowedHeaders(List.of("*"));
        
