@@ -2,11 +2,11 @@ import axios from "axios";
 
 const API = axios.create({
   //baseURL: "http://localhost:8080",
-  baseURL: "https://anil-employee-backend.onrender.com/"
+  baseURL: "https://anil-employee-backend.onrender.com"
 });
 
-//To run locally uncomment the below
-/*
+
+
 // Attach JWT automatically
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
@@ -14,6 +14,8 @@ API.interceptors.request.use((req) => {
     req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
-});*/
+});
+
+
 
 export default API;
