@@ -1,5 +1,5 @@
-# Use Java 17
-FROM openjdk:17-jdk-slim
+# Use Java 17 (latest supported)
+FROM eclipse-temurin:17-jdk
 
 # Set working directory
 WORKDIR /app
@@ -7,5 +7,5 @@ WORKDIR /app
 # Copy jar file
 COPY target/*.jar app.jar
 
-# Run the jar
+# Run application
 ENTRYPOINT ["java", "-jar", "app.jar"]
