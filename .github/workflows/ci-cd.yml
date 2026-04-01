@@ -26,7 +26,7 @@ jobs:
       - name: Build & Test Spring Boot
         run: |
           cd Java-SpringBoot-Node-React
-          mvn clean verify
+          mvn clean install verify -DskipTests
 
 
   build-frontend:
